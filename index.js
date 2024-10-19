@@ -80,9 +80,17 @@ async function run() {
       }
     })
 
-    // rooms get route
+    // get all rooms from db
     app.get("/rooms", async(req,res) => {
       const result = await roomsCollection.find().toArray();
+      res.send(result)
+    })
+
+    // get a single room data from db using _id
+    app.get("/room/:id", async(req,res) => {
+      const id = req.params.id;
+      const query = {_id : new ObjectId(id)};
+      const result = await roomsCollection.findOne(query);
       res.send(result)
     })
 
