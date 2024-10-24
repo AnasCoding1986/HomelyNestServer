@@ -81,22 +81,32 @@ async function run() {
     })
 
     // get all rooms from db
-    app.get("/rooms", async(req,res) => {
+    app.get("/rooms", async (req, res) => {
       const category = req.query.category;
-
       let query = {};
-      if (category && category!=='null') {
-        query= {category}
+      if (category && category !== 'null') {
+        query = { category }
       }
-      console.log(query);
       const result = await roomsCollection.find(query).toArray();
       res.send(result)
     })
 
+    // post/save rooms to MongoDB
+    app.post("/rooms", async (req, res) => {
+      try {
+        const roomData = req.body;
+        const result = await roomsCollection.insertOne(roomData);
+        res.status(201).send({ success: true, insertedId: result.insertedId });
+      } catch (error) {
+        res.status(500).send({ success: false, message: 'Room could not be saved' });
+      }
+    });
+
+
     // get a single room data from db using _id
-    app.get("/room/:id", async(req,res) => {
+    app.get("/room/:id", async (req, res) => {
       const id = req.params.id;
-      const query = {_id : new ObjectId(id)};
+      const query = { _id: new ObjectId(id) };
       const result = await roomsCollection.findOne(query);
       res.send(result)
     })
