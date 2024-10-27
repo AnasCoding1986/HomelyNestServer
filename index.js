@@ -92,9 +92,9 @@ async function run() {
     })
 
     // my-listing get api
-    app.get("/my-listings/:email", async (req,res) => {
+    app.get("/my-listings/:email", async (req, res) => {
       const email = req.params.email;
-      const query = {'host.email':email};
+      const query = { 'host.email': email };
       const result = await roomsCollection.find(query).toArray();
       res.send(result)
     })
@@ -118,6 +118,23 @@ async function run() {
       const result = await roomsCollection.findOne(query);
       res.send(result)
     })
+
+    // Delete a single room data from db using _id
+    app.delete("/room/:id", async (req, res) => {
+      try {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const result = await roomsCollection.deleteOne(query);
+        if (result.deletedCount === 1) {
+          res.send({ success: true, message: "Room deleted successfully" });
+        } else {
+          res.status(404).send({ success: false, message: "Room not found" });
+        }
+      } catch (error) {
+        res.status(500).send({ success: false, message: "Failed to delete room" });
+      }
+    });
+
 
     // Send a ping to confirm a successful connection
     await client.db('admin').command({ ping: 1 })
