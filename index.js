@@ -49,6 +49,7 @@ async function run() {
   try {
 
     const roomsCollection = client.db("homelyNest").collection("rooms");
+    const usesrCollection = client.db("homelyNest").collection("users");
 
     // auth related api
     app.post('/jwt', async (req, res) => {
@@ -134,6 +135,22 @@ async function run() {
         res.status(500).send({ success: false, message: "Failed to delete room" });
       }
     });
+
+    //==== usesrCollection api ====
+
+    // put a user into db
+    app.put("/user", async(req,res) => {
+      const user = req.body;
+      const options = {upsert: true};
+      const query = {email: user?.email};
+
+      const updateDoc = {
+        $set: {
+          ...user,
+        }
+      }
+      const result = await usesrCollection.updateOne(query, updateDoc, options)
+    })
 
 
     // Send a ping to confirm a successful connection
