@@ -147,10 +147,12 @@ async function run() {
       const updateDoc = {
         $set: {
           ...user,
+          timestamp: new Date()
         }
       }
       const result = await usesrCollection.updateOne(query, updateDoc, options)
     })
+
 
 
     // Send a ping to confirm a successful connection
