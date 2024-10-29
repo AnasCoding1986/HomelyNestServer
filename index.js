@@ -141,9 +141,17 @@ async function run() {
     // put a user into db
     app.put("/user", async(req,res) => {
       const user = req.body;
-      const options = {upsert: true};
       const query = {email: user?.email};
-
+      const isExists = usesrCollection.findOne(query);
+      if (isExists) {
+        if (user.status === "requested") {
+          const result = await usesrCollection.updateOne(query, {
+            $set: {status: user?.status}
+          })
+        }
+        return res.send(isExists)
+      }
+      const options = {upsert: true};
       const updateDoc = {
         $set: {
           ...user,
