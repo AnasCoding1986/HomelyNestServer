@@ -157,6 +157,7 @@ async function run() {
           ...user,
           timestamp: new Date()
         }
+        demo
       }
       const result = await usesrCollection.updateOne(query, updateDoc, options)
     })
