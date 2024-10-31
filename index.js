@@ -157,12 +157,20 @@ async function run() {
           ...user,
           timestamp: new Date()
         }
-        demo
       }
       const result = await usesrCollection.updateOne(query, updateDoc, options)
     })
 
+    app.get("/users", async (req,res) => {
+      const result = await usesrCollection.find().toArray();
+      res.send(result)
+    })
 
+    app.get("/user/:email", async (req,res) => {
+      const email = req.params.email;
+      const result = await usesrCollection.findOne({email});
+      res.send(result)
+    })
 
     // Send a ping to confirm a successful connection
     await client.db('admin').command({ ping: 1 })
